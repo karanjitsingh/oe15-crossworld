@@ -1,0 +1,32 @@
+
+
+.bb-custom-icon1:before {
+	font-family: 'arrows';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	font-size: 20px;
+	line-height: 30px;
+	display: block;
+	-webkit-font-smoothing: antialiased;
+}
+
+.bb-custom-icon-first1:before,
+.bb-custom-icon-last1:before {
+	content: "\e002";
+}
+
+.bb-custom-icon-arrow-left1:before,
+.bb-custom-icon-arrow-right1:before {
+	content: "\e003";
+}
+
+.bb-custom-icon-arrow-left1:before,
+.bb-custom-icon-first1:before {
+	-webkit-transform: rotate(180deg);
+	transform: rotate(180deg);
+}
+
