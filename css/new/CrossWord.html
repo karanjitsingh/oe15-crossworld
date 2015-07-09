@@ -3,12 +3,14 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" type="text/css" href="resize.css">
-
+<script src="jquery.js"></script>
+<script src="http://maps.googleapis.com/maps/api/js"></script>
+<script type="text/javascript" src="gmap.js"></script>
 </head>
-<body>
+<body onLoad="initialize()">
 
 <div class="header">
-<h1>CrossWord</h1>
+<h1>CrossWorld</h1>
    
 </div>
 
@@ -21,20 +23,35 @@
 		<li>Facts</li>
 		</ul>
 	</div>
-	<div class="col-1"></div>
-	<div class="col-4 center">
-		<div class="map">
-		map
-		</div>
+	
+	<div class="col-10 center" >
+	<div id="google_map"></div>
 	</div>
-	<div class="col-1"></div>
-	<div class="col-4 right">
-		<div class="aside">
-			<h2>Question Div</h2>
-		</div>
-	</div>
-
+	
 </div>
+<div class="row">
+ <div class="col-2"></div>
+ <div class="col-10 right">
+		<div class="aside">
+			<h2>Select poland</h2>
+
+    <form>
+	<input type="radio" name="answer" value="a1"/> Pol<br/>
+	<input type="radio" name="answer" value="a2"/> Eng<br/>
+	<input type="radio" name="answer" value="a3"/> Aus<br/>
+    <input type="button" value="que1">
+    </form>
+    <h2>Select India</h2>
+
+    <form>
+	<input type="radio" name="answer" value="a1"/> Ind<br/>
+	<input type="radio" name="answer" value="a2"/> Eng<br/>
+	<input type="radio" name="answer" value="a3"/> Aus<br/>
+    <input type="button" value="que2">
+    </form>
+		</div>
+</div>
+</div>	
 	
 	<div class="footer">
 		<p>Beta version in progress</p>
