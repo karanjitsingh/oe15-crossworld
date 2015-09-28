@@ -2,8 +2,76 @@
 var LEVEL = "";
 
 //Page JS
-function notify(text) {
-	alert(text);
+
+
+var notification = {
+		timeout:0,
+
+		show:function(msg) {
+			$id("notification").getElementsByTagName("span")[0].innerHTML = msg + " ";
+			$id("notification").className = "visible";
+			clearTimeout(notification.timeout);
+			notification.timeout = setTimeout(notification.hide,4000);
+		},
+
+		 hide:function() {
+			$id("notification").removeAttribute("class");
+		}
+	};
+
+function hideNotification() {
+	$id("fullPageNotify").style.display="none";
+}
+
+function notify(code) {
+	switch(code) {
+		case 101:
+			msg="Correct Answer!";
+			loadLevel();
+			notification.show(msg);
+			break;
+		case 102:
+			msg="Level Up!";
+			closeLevel();
+			notification.show(msg);
+			break;
+		case 103:
+			msg="Break.";
+			$id("fullPageNotify").getElementsByTagName("span")[0].innerHTML = "Congrats you've completed all the levels.<br/>New levels to be unlocked soon!";
+			$id("fullPageNotify").style.display = "block";
+			var pins = document.getElementsByClassName("map-pin");
+			pins[pins.length-1].removeAttribute("onclick");
+			pins[pins.length-1].style.background = "#008800";
+			pins[pins.length-1].className = "map-pin";
+			closeLevel()
+			break;
+		case 104:
+			msg="You won.";
+			$id("fullPageNotify").getElementsByTagName("span")[0].innerHTML = "Congrats you've completed all the levels in Crossworld.";
+			$id("fullPageNotify").style.display = "block";
+			closeLevel()
+			break;
+		case 105:
+			msg="Wrong answer."
+			notification.show(msg);
+			break;
+		case 106:
+			msg="Answer can't be empty.";
+			notification.show(msg);
+			break;
+	}
+	
+}
+
+
+var loading=false;
+function toggleLoading() {
+	
+	if(!loading)
+		$id("loading-div").setAttribute("class","topmost");
+	else
+		$id("loading-div").setAttribute("class","stop");
+	loading = loading==false?true:false;
 }
 
 function $id(obj) {
@@ -154,6 +222,8 @@ function logout() {
 	info.ahead = -1;
 	info.current= -1;
 
+	closeLevel();
+
 	setTimeout(removeSessionItems,1500);
 
 	var ajax = new ajaxRequest;
@@ -203,8 +273,8 @@ function updateInfoCallback(xmlhttp) {
 				login(true);
 			}
 			else if(info.question != info2.question && info.question!=0) {
-				if(LEVEL!="")
-					closeLevel();
+				//if(LEVEL!="")
+				//	closeLevel();
 				info.question = info2.question;
 				console.log("question up");
 				if(document.getElementsByClassName("map-pin current").length>0)
@@ -230,8 +300,10 @@ function login(re) {
 	if(re)
 		data="relogin=true";
 	var ajax = new ajaxRequest;
+	toggleLoading();
 	ajax.post("fetch/login.php",data,function(xmlhttp) {
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			toggleLoading();
 			var response=xmlhttp.responseText.split("|");
 			if(response.length!=7)
 				return;
@@ -253,6 +325,57 @@ function login(re) {
 
 //Game JS
 
+function updateInfo(responseText) {
+
+	var info2 = {
+		current: -1,
+		ahead: -1,
+		loggedIn: false,
+		user: -1,
+		level: -1,
+		question: -1
+	}
+	
+	var response = responseText.split("|");
+
+
+	info2.level = parseInt(response[1]);
+	info2.question = parseInt(response[2]);
+	info2.current = parseInt(response[3]);
+	info2.ahead = parseInt(response[4]);
+	info2.user = response[5];
+	info2.loggedIn= response[6]=="true"?true:false;
+
+	if(!info2.loggedIn || info2.user !=info.user) {
+		logout();
+		return;
+	} else {
+		info.current = info2.current;
+		info.ahead = info2.ahead;
+		if(info.level != info2.level){
+			if(LEVEL!="")
+				closeLevel();
+			info.level = info2.level;
+			console.log("level up");
+			info.question = info2.question;
+			removeSessionItems();
+			login(true);
+		}
+		else if(info.question != info2.question && info.question!=0) {
+			if(LEVEL!="")
+				closeLevel();
+			info.question = info2.question;
+			console.log("question up");
+			if(document.getElementsByClassName("map-pin current").length>0)
+			document.getElementsByClassName("map-pin current")[0].setAttribute("question",info.question);
+		}
+		else if(info.question==0 && info2.question!=0) {
+			info.question = info2.question;
+		}
+	}
+	
+}
+
 function animateShowJigsaw() {
 	$id("jigsaw").getElementsByTagName('table')[0].style.opacity = "1";
 	$id("jigsaw").getElementsByTagName('table')[0].style.transform = "translateY(0)";
@@ -273,9 +396,11 @@ function loadLevel(start) {
 	if(start) {
 
 		var ajax = new ajaxRequest;
+		toggleLoading();
 		ajax.post("fetch/","start=true",
 			function(xmlhttp) {
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					toggleLoading();
 					var response = xmlhttp.responseText.split("|");
 					$id('level-content').innerHTML = response[1];
 					$id('level-content').innerHTML+='<div onclick="closeLevel()" class="close"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><polygon id="x-mark-icon" points="438.393,374.595 319.757,255.977 438.378,137.348 374.595,73.607 255.995,192.225 137.375,73.622 73.607,137.352 192.246,255.983 73.622,374.625 137.352,438.393 256.002,319.734 374.652,438.378 "/></svg></div>';
@@ -301,9 +426,11 @@ function loadLevel(start) {
 	}
 
 	var ajax = new ajaxRequest;
+	toggleLoading();
 	ajax.post("fetch/","",
 		function(xmlhttp) {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				toggleLoading();
 				var response = xmlhttp.responseText.split("|");
 				$id('level-content').innerHTML = response[1];
 				$id('level-content').innerHTML+='<div onclick="closeLevel()" class="close"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><polygon id="x-mark-icon" points="438.393,374.595 319.757,255.977 438.378,137.348 374.595,73.607 255.995,192.225 137.375,73.622 73.607,137.352 192.246,255.983 73.622,374.625 137.352,438.393 256.002,319.734 374.652,438.378 "/></svg></div>';
@@ -352,15 +479,20 @@ function submitCallback(xmlhttp) {
 		response = xmlhttp.responseText.split("|");
 		if(response.length>1) {
 			if(response[0] == "valid")
-				//$id('level-content').setAttribute("class","flip");
-				notify("Correct!");
+				notify(101);
 			else if(response[0] == "level up")
-				notify("Level Up!")
+				notify(102)
+			else if(response[0] == "break")
+				notify(103);
 			else if(response[0] == "victory")
-				notify("You Won!");
+				notify(104);
 		}
 		else
-			notify("Wrong answer.");
+			notify(105);
+
+		updateInfo(xmlhttp.responseText);
+
+		toggleLoading();
 	}
 
 	delete xmlhttp.onreadystatechange;
@@ -372,15 +504,18 @@ function submitSolution() {
 	switch(LEVEL) {
 		case 'jigsaw':
 			answer = validateJigsaw();
+			toggleLoading();
 			ajax.post("submit/","type=jigsaw&answer=" + answer,submitCallback);
 			break;
 		case 'question':
 			answer=$id("answer").value;
 			var ajax = new ajaxRequest;
 			if(answer==undefined || answer.trim() == "")
-				notify("Answer can't be empty dumbo!");
-			else
+				notify(106);
+			else {
+				toggleLoading();
 				ajax.post("submit/","type=question&answer=" + answer,submitCallback);
+			}
 		break;
 
 	}

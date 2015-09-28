@@ -1,6 +1,7 @@
 html,body {
 	height:100%;
 	overflow:hidden;
+	font-family: 'Open Sans';
 }
 
 table,td,tr {
@@ -142,6 +143,15 @@ a.register:hover {
 	height:100%; width:100%; border:2px solid #fff; border-radius:100px;
 }
 
+#loading-div.topmost div{
+	border-color:#333 !important;
+}
+
+#loading-div.topmost {
+	z-index: 100 !important;
+	opacity:1;
+}
+
 #loading-div.stop {
 	-webkit-animation-iteration-count:1 !important;
 }
@@ -245,27 +255,6 @@ div.map-pin.current:hover {
 	-webkit-animation: levelPopOut 0.2s ease-in 0s forwards !important;
 
 }
-
-/*#level-content.flip {
-		-webkit-animation-play-state:running;
-	-webkit-animation: flipAnimation 1s ease-in 0s forwards !important;
-
-}
-
-@-webkit-keyframes flipAnimation {
-	0% {
-		opacity: 1;
-		transform:scale(1,1) perspective( 3000px ) rotateY(0deg) ;
-	}
-	50% {
-		opacity: 1;
-		transform:scale(0.7,0.7) perspective( 3000px ) rotateY(90deg) ;
-	}
-	100% {
-		opacity: 1;
-		transform:scale(1,1) perspective( 3000px ) rotateY(180deg) ;
-	}
-}*/
 
 @-webkit-keyframes levelPopIn {
 	from {
@@ -461,4 +450,83 @@ div.info-overlay:hover svg{
 #user:hover {
 	background: #333;
 	color:#fff;
+}
+
+
+#notification {
+	position:fixed;bottom: -60px;width: 250px;left: 50%;height: 60px;margin-left: -125px;border-radius: 3px;background: #555;box-shadow: 0px 1px 1px 0px #000;padding: 14px;box-sizing: border-box;
+	opacity: 0;
+	transition: transform 0.2s ease-out,opacity 0.2s ease-out;
+	z-index: 110;
+
+}
+
+#notification.visible {
+	transform: translateY(-110px);
+	opacity: 1;
+}
+
+#notification span {
+	float: left;
+	font-size: 14px;
+	line-height: 32px;
+	padding-left: 10px;
+	color: #ddd;
+}
+
+
+
+#fullPageNotify div.message {
+	font-family: 'Open Sans';
+	font-weight: 300;
+	font-size: 24px;
+	width: 600px;
+    text-align: center;
+    left: 50%;
+    margin-left: -300px;
+    position: absolute;
+    height: 100%;
+    display: table;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+    color:#fff;
+}
+
+#fullPageNotify {
+    text-shadow: #000 0px 0px 2px ;
+    background-color: rgba(0,0,0,0.6);
+    height: 100%; width: 100%;
+    position: absolute;
+    left:0px;
+    top:0px;
+}
+
+#fullPageNotify div.message div {
+	display: table-cell;
+    vertical-align: middle;
+}
+
+#fullPageNotify a.submit {
+    display: inline-block;
+    color: #fff !important;
+    font-size: 16px;
+    background: rgba(255,255,255,0.2) !important;
+    border: solid rgba(255,255,255,0.7) 2px  !important;
+    text-align: center;
+    width: 80px;
+    padding: 4px !important;
+    text-decoration: none;
+    font-family: "Open Sans";
+    font-weight: 400;
+    cursor: pointer;
+    transition: border-color 0.1s ease, background-color 0.3s ease,color 0.3s ease;
+
+    display: block !important;
+    margin: 60px auto 0 auto;
+}
+
+#fullPageNotify a.submit:hover {
+    border-color: rgba(255,255,255,0) !important;
+    background-color:  rgba(255,255,255,0.7) !important;
+    color:#666 !important;
+    text-shadow: #000 0px 0px 0px ;
 }

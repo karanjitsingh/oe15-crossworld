@@ -22,10 +22,12 @@
 			if($level == 8){
 				echo "victory|";
 				$conn->query("update crossworld_users set completed=1,time=".time()." where username='".$GLOBALS['user']."';");
+				$GLOBALS['victory']=1;
 			}
 			else if($level==1) {
 				echo "break|";
 				$conn->query("update crossworld_users set partialCompleted=1,time=".time()." where username='".$GLOBALS['user']."';");
+				$GLOBALS['partialCompleted']=1;
 			}
 			else {
 				$conn->query("update crossworld_users set level=".($level+1).", question=1,time=".time()." where username='".$GLOBALS['user']."';");

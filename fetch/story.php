@@ -7,7 +7,7 @@
 			echo fread($file, filesize("../content/level$level/intro.html"));
 			fclose($file);
 		?>
-		<a class="submit" onclick="startLevel()">Start</a>
+		<a class="submit" onclick="startLevel()">Start</a></div></div>
 </div>
 
 </div>

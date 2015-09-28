@@ -8,6 +8,7 @@
 	$qMax=-1;
 	$levelMax=-1;
 	$victory = false;
+	$partialCompleted = false;
 	session_set_cookie_params(0);
 	session_start();
 
@@ -72,7 +73,10 @@
 					$q=" question=".$question;
 				}
 
-				echo '<div level='.$data['level'].$q.' class="map-pin'.$clickable.'"'.$onclick.' style="left:'.$data["xpos"].'px; top:'.$data["ypos"].'px;"></div>';
+				if($data['level'] == $level && $data2['completed']==0 && $data2['partialCompleted']==0)
+					echo '<div level='.$data['level'].$q.' class="map-pin'.$clickable.'"'.$onclick.' style="left:'.$data["xpos"].'px; top:'.$data["ypos"].'px; background:#000;"></div>';
+				else
+					echo '<div level='.$data['level'].$q.' class="map-pin'.$clickable.'"'.$onclick.' style="left:'.$data["xpos"].'px; top:'.$data["ypos"].'px; background:#008800;"></div>';
 			} while($data['level'] < $level);
 
 		}
@@ -82,9 +86,10 @@
 		$conn = $GLOBALS['conn'];
 		$level = $GLOBALS['level'];
 		$question = $GLOBALS['question'];
-		$result = $conn->query("select count(level) as current from crossworld_users where level=$level and question=$question;");
+		$result = $conn->query("select count(level) as current from crossworld_users where level=$level and question=$question and completed=".$GLOBALS['victory']." and partialCompleted=".$GLOBALS['partialCompleted'].";");
 		$GLOBALS['current']=$result->fetch_assoc()['current'] -1;
-		$result = $conn->query("select count(level) as ahead from crossworld_users where (level=$level and question >= $question ) or (level>$level);");
+		$result = $conn->query("select count(level) as ahead from crossworld_users where ((level=$level and question > $question ) or (level>$level)) and completed=".$GLOBALS['victory']." and partialCompleted=".$GLOBALS['partialCompleted'].";");
+
 		$GLOBALS['ahead']=$result->fetch_assoc()['ahead'];
 		$GLOBALS['loggedIn']=true;
 		echo $GLOBALS['level']."|";
@@ -119,6 +124,8 @@
 
 		$GLOBALS['level'] = $data['level'];
 		$GLOBALS['question'] = $data['question'];
+		$GLOBALS['victory']=$data['completed'];
+		$GLOBALS['partialCompleted'] = $data['partialCompleted'];
 
 		return true;
 	}
