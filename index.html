@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+
+<head>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300|Montserrat:400,700|Roboto:500,400' rel='stylesheet' type='text/css'>
+	<link href="./style/page.css" rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+
+<div id="cover-content" style="background:url(./images/world.png) no-repeat; background-position-x:center;">
+	<table class="cover-content-wrapper">
+		<tr><td style="margin-bottom:5px;"><h1 class="title">Cross World</h1></td></tr>
+		<tr><td><a href="#" class="register">Register</a>
+
+		
+		</td></tr>
+	</table>
+</div>
+<div id="loading-div" class=""><div></div></div>
+<div id="page-content" style="display:none;"></div>
+<div id="image-content" style="display:none;">
+	
+
+	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 25 25" style="enable-background:new 0 0 25 25;" xml:space="preserve" class="map-x">
+	<path d="M0.438,0.277c0,0,12.632,23.158,21.053,22.105"/>
+	<path d="M21.491,0.277c0,0-12.632,19.017-21.053,22.14"/>
+	</svg>
+</div>
+
+</body>
+
+<script type="text/javascript">
+	function $id(obj) {
+		return document.getElementById(obj);
+	}
+
+	setTimeout(function(){ 
+		//return;
+		$id("cover-content").setAttribute("class","visible");
+		$id("loading-div").setAttribute("class","stop");
+	},3000);
+</script>
+
+</html>

@@ -1,0 +1,17 @@
+remove login sessions
+add check session
+add autoregister
+change database to store status of all levels
+show all levels at once
+add story mode
+add new question animation
+add wrong answer animation / notification
+integrate logout with main page
+update jigsaw randomizatoin
+add map pin animation
+figure out scoring/leaderboard logic
+add completed time stamp to database
+
+add content
+make jigsaws for all images
+
