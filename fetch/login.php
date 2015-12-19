@@ -1,4 +1,7 @@
 <?php
+
+	include "../../session.php";
+
 	$level= -1;
 	$question= -1;
 	$current= -1;
@@ -9,7 +12,7 @@
 	$levelMax=-1;
 	$victory = false;
 	$partialCompleted = false;
-	session_set_cookie_params(0);
+	/*session_set_cookie_params(0);
 	session_start();
 
 	function verifySession() {
@@ -48,7 +51,7 @@
 
 	function consolelog($data) {
 		echo "<script>console.log('".$data." - via php')</script>";
-	}
+	}*/
 
 	function echoMapData() {
 
@@ -100,7 +103,7 @@
 		echo ($GLOBALS['loggedIn']?"true":"false");
 	}
 
-	function getSessionUser($conn) {
+	/*function getSessionUser($conn) {
 		if(isset($_SESSION['user']))
 		if(checkUser($_SESSION['user'],$conn)){
 			
@@ -112,13 +115,20 @@
 		}
 		clearSession();
 		return false;
-	}
+	}*/
 
-	function checkUser($user,$conn) {
+	function setUserSession($user,$conn) {
+
+		$GLOBALS['user']=$user;
+		$_SESSION['user']=$user;
+
 		$result=$conn->query("Select * from crossworld_users where username = '$user';");
 	
-		if($result->num_rows==0)
-			return false;
+		if($result->num_rows==0) {
+			$conn->query("insert into crossworld_users values('$username',1,0,0,0,0);");
+			$result=$conn->query("Select * from crossworld_users where username = '$user';");
+		}
+
 		$data = $result->fetch_assoc();
 
 
@@ -127,11 +137,10 @@
 		$GLOBALS['victory']=$data['completed'];
 		$GLOBALS['partialCompleted'] = $data['partialCompleted'];
 
-		return true;
 	}
 
 
-	$servername = "localhost";
+	/*$servername = "localhost";
 	$dbuser = "root";
 	$dbpass = "karan";
 	$db="oe_crossworld";
@@ -141,7 +150,7 @@
 	if ($conn->connect_error) {
     	//404
     	die("Connection failed: " . $conn->connect_error);
-	}
+	}*/
 
 	//clearSession();
 	//consolelog($_SESSION['user']);
@@ -152,25 +161,17 @@
 	$qMax = $data['qMax'];
 	$levelMax = $data['levelMax'];
 
-	if(isset($_POST['user'])) {
-		clearSession();
-		setSession();
-		if(getSessionUser($conn)) {
-			$loggedIn = true;
+	if(checkSession()) {
+
+		setUserSession($_SESSION['username'],$conn);
+		$loggedIn = true;
+		if(isset($_POST['update']))
+			echoUpdates($conn);
+		else if(isset($_POST['relogin'])) {
 			echoUpdates();echo "|";
 			echoMapData();
 		}
-	} else 
-		if(verifySession())
-			if(getSessionUser($conn)) {
-				$loggedIn = true;
-				if(isset($_POST['update']))
-					echoUpdates($conn);
-				else if(isset($_POST['relogin'])) {
-					echoUpdates();echo "|";
-					echoMapData();
-				}
-			}
+	}
 
 
 ?>

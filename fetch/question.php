@@ -12,14 +12,20 @@
 				</tr>
 				<tr>
 					<td style="padding:30px 30px 60px 30px;" colspan="2">
-						<span class="q"><?php echo $data['data']." "; ?></span>
+						<span class="q"><?php 
+
+							$file=fopen("../content/level$level/raw/".$data['data'],"r");
+							echo fread($file, filesize("../content/level$level/raw/".$data['data']));
+							fclose($file);
+
+						?></span>
 						<?php 
 
 							$result = $conn->query("select image from crossworld_qbank where qno=$question and level = $level;");
 							$data = $result->fetch_assoc();
 							$image = $data['image'];
 							if(!is_null($image)) {
-								echo "<a class=\"image\" target=\"_blank\" href=\"./content/level$level/$image\">Image</a>";
+								echo "<br /><a class=\"image\" target=\"_blank\" href=\"./content/level$level/$image\">Image</a>";
 							}
 
 						?>

@@ -1,5 +1,13 @@
 <!doctype html>
 <?php
+
+	session_start();
+	include "../session.php";
+		if(!checkSession()) {
+			die( "<script>if(parent.logout) parent.logout(301); else document.location.href=\"http://onlineevents.techtatva.in/?nologin=true\";</script>");
+		}
+	
+
 	include("./fetch/login.php");
 ?>
 <!doctype html>
@@ -20,7 +28,7 @@
 <div id="cover-content">
 	<table class="cover-content-wrapper">
 		<tr><td style="margin-bottom:5px;"><h1 class="title">Cross World</h1></td></tr>
-		<tr><td><a onclick="login()" class="register" style="margin-right:5px;">Login</a><a href="#" class="register" style="margin-left:5px;">Register</a></td></tr>
+		<tr><td><a onclick="login()" class="register" style="margin-right:5px;">Start</a><!--<a href="#" class="register" style="margin-left:5px;">Register</a>--></td></tr>
 	</table>
 </div>
 <div id="loading-div" class=""><div></div></div>

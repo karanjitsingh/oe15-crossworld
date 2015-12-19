@@ -24,13 +24,13 @@
 				$conn->query("update crossworld_users set completed=1,time=".time()." where username='".$GLOBALS['user']."';");
 				$GLOBALS['victory']=1;
 			}
-			else if($level==1) {
+			else if($level==4) {
 				echo "break|";
 				$conn->query("update crossworld_users set partialCompleted=1,time=".time()." where username='".$GLOBALS['user']."';");
 				$GLOBALS['partialCompleted']=1;
 			}
 			else {
-				$conn->query("update crossworld_users set level=".($level+1).", question=1,time=".time()." where username='".$GLOBALS['user']."';");
+				$conn->query("update crossworld_users set level=".($level+1).", question=0,time=".time()." where username='".$GLOBALS['user']."';");
 				echo "level up|";
 			}
 		}
@@ -80,7 +80,7 @@
 	 			$result = $conn->query('select answer from crossworld_qbank where level='.$level.' and qno='.$question.';');
 	 			$data = $result->fetch_assoc();
 
-	 			if($answer == $data['answer'])
+	 			if(strtolower($answer) == strtolower($data['answer']))
 	 				$valid = true;
 	 			break;
  			default:
@@ -88,12 +88,15 @@
  		}
   		if($valid == true){
   			levelUp($conn);
-  			echoUpdates();
+  			
   		}
 		else
-			echo "invalid";
+			echo "invalid|";
+		
 	}
 	else
-		echo "invalid";
+		echo "invalid|";
+
+	echoUpdates();
 
 ?>

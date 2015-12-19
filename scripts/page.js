@@ -105,7 +105,7 @@ function initMouseEvents() {
 	var rect=$id("user").getBoundingClientRect();
 	$id("user").onmouseover=function(){statDisplay(rect.left + rect.width/2 - 60,rect.bottom + 10,0,"user");};
 	$id("user").onmouseout=hideOverlay;
-	$id("user").onclick = logout;
+	$id("user").onclick = localLogout;
 	
 	var pins = document.getElementsByClassName("map-pin");
 	for(var i=0;i<pins.length;i++) {
@@ -214,7 +214,7 @@ function removeSessionItems()
 	}
 }
 
-function logout() {
+function localLogout() {
 	info.level = -1;
 	info.question = -1;
 	info.user = "";
@@ -224,15 +224,21 @@ function logout() {
 
 	closeLevel();
 
-	setTimeout(removeSessionItems,1500);
-
-	var ajax = new ajaxRequest;
-	ajax.post("fetch/logout.php","");
+	//setTimeout(removeSessionItems,1500);
 
 	$id("loading-div").removeAttribute("class");
 	$id("cover-content").setAttribute("class","visible");
-	setTimeout(function(){$id("page-content").removeAttribute("class");},1500)
+	$id("page-content").removeAttribute("class");
 
+	var ajax = new ajaxRequest;
+
+	ajax.post("../login/logout.php","a=b",function(){
+		if(parent.logout) 
+			parent.logout();
+		else
+		document.location.href="http://onlineevents.techtatva.in/";
+	
+	});
 
 }
 
@@ -258,7 +264,7 @@ function updateInfoCallback(xmlhttp) {
 		info2.loggedIn= response[5]=="true"?true:false;
 
 		if(!info2.loggedIn || info2.user !=info.user) {
-			logout();
+			localLogout();
 			return;
 		} else {
 			info.current = info2.current;
@@ -347,7 +353,7 @@ function updateInfo(responseText) {
 	info2.loggedIn= response[6]=="true"?true:false;
 
 	if(!info2.loggedIn || info2.user !=info.user) {
-		logout();
+		localLogout();
 		return;
 	} else {
 		info.current = info2.current;
@@ -477,18 +483,18 @@ function submitCallback(xmlhttp) {
 	if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 		console.log(xmlhttp.responseText);
 		response = xmlhttp.responseText.split("|");
-		if(response.length>1) {
-			if(response[0] == "valid")
-				notify(101);
-			else if(response[0] == "level up")
-				notify(102)
-			else if(response[0] == "break")
-				notify(103);
-			else if(response[0] == "victory")
-				notify(104);
-		}
-		else
+		
+		if(response[0] == "valid")
+			notify(101);
+		else if(response[0] == "level up")
+			notify(102)
+		else if(response[0] == "break")
+			notify(103);
+		else if(response[0] == "victory")
+			notify(104);
+		else if(response[0] == "invalid")
 			notify(105);
+	
 
 		updateInfo(xmlhttp.responseText);
 
